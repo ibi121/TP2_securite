@@ -76,8 +76,6 @@ app.post('/login', (req, res) => {
             if(error){
                 throw error;
             }
-
-            console.log(resultat)
         
             if(resultat.length > 0) {
                 bcrypt.compare(motDePasse, resultat[0].motDePasse, (error, response) => {
