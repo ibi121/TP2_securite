@@ -1,5 +1,7 @@
 {
   "dependencies": {
-    "cookie-session": "^2.0.0"
+    "cookie-session": "^2.0.0",
+    "rate-limit-redis": "^3.0.2",
+    "req-flash": "^0.0.3"
   }
 }

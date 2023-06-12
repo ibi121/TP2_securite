@@ -18,7 +18,7 @@ export default function Connection(props) {
   }
 
   function logins(){
-    Axios.get(" http://localhost:3000/login").then((reponse) => {
+    Axios.get(" http://127.0.0.1:3069/login").then((reponse) => {
       if(reponse.data.loggedIn === true) {
         props.onClick(reponse.data.utilisateur[0]);
         backToTheFuture();
@@ -28,12 +28,11 @@ export default function Connection(props) {
 
 
   function login(){
-    Axios.post(" http://localhost:3000/login",{
+    Axios.post(" http://127.0.0.1:3069/login",{
       motDePasse : motDePasse,
       courriel: courriel
     }).then((response)=> {
       if(response.data.message) {
-        console.log('yes :o)')
         console.log(response.data.message)
       }else {
         logins();

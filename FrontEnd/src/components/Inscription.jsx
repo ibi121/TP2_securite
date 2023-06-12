@@ -36,16 +36,16 @@ export default function Inscription(props) {
     const isDateOfBirthValid = /^\d{4}-\d{2}-\d{2}$/.test(dateNaissance);
 
     // Vérifier si tous les champs sont valides
-    if (
-      isEmailValid &&
-      isPasswordValid &&
-      isFirstNameValid &&
-      isPhoneNumberValid &&
-      isAgeValid &&
-      isLastNameValid &&
-      isDateOfBirthValid
-    ) {
-     /* Axios.post("http://localhost:3069/inscription", {
+    // if (
+    //   isEmailValid &&
+    //   isPasswordValid &&
+    //   isFirstNameValid &&
+    //   isPhoneNumberValid &&
+    //   isAgeValid &&
+    //   isLastNameValid &&
+    //   isDateOfBirthValid
+    // ) {
+     Axios.post("http://127.0.0.1:3069/inscription", {
         courriel: courriel,
         motDePasse: motDePasse,
         prenom: prenom,
@@ -57,13 +57,14 @@ export default function Inscription(props) {
         if (response.data.message) {
           console.log(response);
           goToConnection();
+        }else{
+          console.log("Je suis erreur de duplicate key " + response.data.error);
         }
-      })
-        ;
-    */} else {
-      // Afficher des messages d'erreur ou effectuer d'autres actions en cas de champs invalides
-      console.log("Veuillez remplir tous les champs correctement.");
-    }
+      });
+    // } else {
+    //   // Afficher des messages d'erreur ou effectuer d'autres actions en cas de champs invalides
+    //   console.log("Veuillez remplir tous les champs correctement.");
+    // }
   }
   return (
     <form className='d-flex justify-content-center'>

@@ -10,6 +10,9 @@ const saltRounds = 10;
 const session = require("express-session");
 const app = express();
 
+const redis = require('redis');
+const rateLimit = require('express-rate-limit');
+
 
 // const server = http.createServer((req, res) => {
 // })
@@ -45,12 +48,15 @@ app.use(
 );
 
 
+let server = app.listen(3069, () => {
+    console.log("i am running?" + server.address().port)
+})
 
 app.get("/login", (req, res) =>{
+
     if(req.session.user){
         res.send({ loggedIn : true, utilisateur : req.session.user});
     }else {
-        console.log("cannot inf user")
         res.send({loggedIn: false});
     }
 })
@@ -60,7 +66,7 @@ app.post('/login', (req, res) => {
     const motDePasse = req.body.motDePasse;
 
     pool.connect(function(err){
-        if(err){
+        if(err){ 
             throw err;
         }
         console.log('je suis bel et bien dans login')
@@ -105,6 +111,7 @@ app.post('/inscription', (req, res) => {
 
     bcrypt.hash(motDePasse, saltRounds, (err, hashedPwd) => {
         if(err){
+
             console.log(err);
         }
     
@@ -115,7 +122,12 @@ app.post('/inscription', (req, res) => {
         ];
         pool.query(sql, [utilisateur], (err, resultat) => {
             if(err) {
+                if(err.code == 'ER_DUP_ENTRY' || err.errno == 1062){
+                    console.log("oh oh");
+                    res.send({error: "Attention, un utilisateur utilise deja "})
+                } else{
                 throw err;
+                }
             } else {
                 console.log("it is a sucess " + resultat.affectedRows)
                 res.send({message: "success"});
@@ -181,7 +193,3 @@ app.get('/getEvents', (req, res) => {
 })
 
 
-
-app.listen(process.env.PORT || 3069, () => {
-    console.log(`bonjour j'ecoute sur le port ${process.env.PORT || '3069'}`)
-})
