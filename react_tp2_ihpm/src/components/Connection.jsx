@@ -42,13 +42,7 @@ export default function Connection(props) {
     })
   }
 
-  function isCaptcha(){
-    login()
-    console.log("i am onn");
-    
-    <Captcha />
-  }
-
+  
   return (
     <div>
       <h3>Bienvenue, veuillez vous connecter</h3>
@@ -62,7 +56,8 @@ export default function Connection(props) {
         <input type="password" onChange={(e) => setMotDePasse(e.target.value)} />
       </label>
      
-      <Button onClick={() => isCaptcha()}>Connecter</Button>
+     <Captcha />
+      <Button onClick={() => login()}>Connecter</Button>
     </div>
   )
 }

@@ -15,7 +15,7 @@ export default function Calendrier() {
   const [events, setEvents] = useState([]);
 
   const supprimer = (title, date) => {
-    Axios.delete(" http://localhost:3069", {
+    Axios.delete(" http://127.0.0.1:3069/supprimerEvent", {
       data: {  
         nom: title,
         date: date
@@ -37,7 +37,7 @@ export default function Calendrier() {
       },
     ]);
 
-    Axios.post(" http://localhost:3069", {
+    Axios.post(" http://127.0.0.1:3069/enregistrementEvent", {
       nom : nomEvent,
       date : dateEvent
       
@@ -48,7 +48,7 @@ export default function Calendrier() {
   }
 
   useEffect(() => {
-    Axios.get(" http://localhost:3069", {
+    Axios.get(" http://127.0.0.1:3069/getEvents", {
     }).then((reponse) => {
       var data = reponse.data;
       var i;

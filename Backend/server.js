@@ -1,4 +1,8 @@
 
+require('es6-promise').polyfill();
+require('isomorphic-fetch');
+
+
 // const http = require ('http');
 
 const express = require('express');
@@ -188,6 +192,15 @@ app.get('/getEvents', (req, res) => {
             res.send(resultat);
         }
     })
+})
+
+const isHuman = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+    method: 'post',
+    headers: {
+        Accept : 'application/json',
+        'Content-Type': ''
+    
+    }
 })
 
 

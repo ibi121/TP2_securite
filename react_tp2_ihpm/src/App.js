@@ -17,7 +17,7 @@ function App() {
   const [prenom, setPrenom] = useState("");
 
   useEffect(() => {
-    Axios.get("127.0.0.1/login", {
+    Axios.get("127.0.0.1:3069/login", {
     }).then((reponse) => {
       if(reponse.data.loggedIn === true) {
         setLogged(reponse.data.loggedIn)

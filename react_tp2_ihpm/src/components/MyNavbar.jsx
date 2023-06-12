@@ -8,7 +8,7 @@ Axios.defaults.withCredentials= true;
 export default function MyNavbar(props) {
   
     const deconnection = () => {
-        Axios.get(" http://localhost:3069/deconnection").then((reponse) => {
+        Axios.get(" http://127.0.0.1:3069/deconnection").then((reponse) => {
             props.onClick(false);
         });
     }
