@@ -61,6 +61,7 @@ export default function Inscription(props) {
           console.log("Je suis erreur de duplicate key " + response.data.error);
         }
       });
+      
     // } else {
     //   // Afficher des messages d'erreur ou effectuer d'autres actions en cas de champs invalides
     //   console.log("Veuillez remplir tous les champs correctement.");

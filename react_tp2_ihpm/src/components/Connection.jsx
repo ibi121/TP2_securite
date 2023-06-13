@@ -3,7 +3,8 @@ import Axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button'
-import Captcha from './Captcha';
+import ReCAPTCHA from "react-google-recaptcha"
+import Recaptcha from 'react-google-recaptcha/lib/recaptcha';
 
 Axios.defaults.withCredentials= true;
 
@@ -11,6 +12,7 @@ export default function Connection(props) {
 
   const [courriel, setCourriel] = useState(0); 
   const [motDePasse, setMotDePasse] = useState(0); 
+  const [captcha, setCaptcha] = useState(0);
   
   const navigate = useNavigate();
 
@@ -20,7 +22,7 @@ export default function Connection(props) {
 
 
   function logins(){
-    Axios.get(" http://127.0.0.1:3069/login").then((reponse) => {
+    Axios.get("http://127.0.0.1:3069/login").then((reponse) => {
       if(reponse.data.loggedIn === true) {
         props.onClick(reponse.data.utilisateur[0]);
         backToTheFuture();
@@ -30,9 +32,10 @@ export default function Connection(props) {
 
 
   function login(){
-    Axios.post(" http://127.0.0.1:3069/login",{
+    Axios.post("http://127.0.0.1:3069/login",{
       motDePasse : motDePasse,
-      courriel: courriel
+      courriel: courriel,
+      captcha: captcha
     }).then((response)=> {
       if(response.data.message) {
         console.log(response.data.message)
@@ -56,7 +59,7 @@ export default function Connection(props) {
         <input type="password" onChange={(e) => setMotDePasse(e.target.value)} />
       </label>
      
-     <Captcha />
+      <ReCAPTCHA sitekey={"6LdUN5EmAAAAAApe89bxMRqtp9PhwpS_8pWc26t_"} onChange={setCaptcha} />
       <Button onClick={() => login()}>Connecter</Button>
     </div>
   )

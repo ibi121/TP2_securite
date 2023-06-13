@@ -12,10 +12,14 @@ const cookieParser = require("cookie-parser");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const session = require("express-session");
+const Axios = require('axios');
+const e = require('express');
 const app = express();
+const qs = require('qs');
 
-const redis = require('redis');
-const rateLimit = require('express-rate-limit');
+
+const RECAPTCHA_SECRET_KEY = "6LdUN5EmAAAAAOX4Op0ojcYfYkUtt2vea1DSgegf"
+
 
 
 // const server = http.createServer((req, res) => {
@@ -32,7 +36,7 @@ app.use(express.json());
 
 app.use(
     cors({
-        origin:["http://localhost:3000"],
+        origin:["http://127.0.0.1:3000"],
         method: ["GET", "POST", "DELETE"],
         credentials: true,    
     })
@@ -51,6 +55,15 @@ app.use(
     })
 );
 
+app.use(function(req, res, next){
+    res.header('Access-Control-Allo-Origin', 'http://127.0.0.1:3000');
+    res.header(
+        'Access-Control-Allow-Headers',
+        'Origin, X-Requested-With, Content-Type, Accept'
+      );
+      next();
+})
+
 
 let server = app.listen(3069, () => {
     console.log("i am running?" + server.address().port)
@@ -65,10 +78,11 @@ app.get("/login", (req, res) =>{
     }
 })
 
-app.post('/login', (req, res) => {
+app.post('/login',(req, res) => {
     const courriel = req.body.courriel;
     const motDePasse = req.body.motDePasse;
-
+    const captcha = req.body.captcha;
+    console.log(checkIfHuman(captcha));
     pool.connect(function(err){
         if(err){ 
             throw err;
@@ -194,13 +208,27 @@ app.get('/getEvents', (req, res) => {
     })
 })
 
-const isHuman = await fetch('https://www.google.com/recaptcha/api/siteverify', {
-    method: 'post',
-    headers: {
-        Accept : 'application/json',
-        'Content-Type': ''
+function checkIfHuman(token){
+    let reussi = false;
+    const isHuman = fetch('https://www.google.com/recaptcha/api/siteverify', {
+        method: 'post',
+        headers: {
+            'Accept' : 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+        },
+        body: `secret=${RECAPTCHA_SECRET_KEY}&response=${token}`
+    })
+    .then(res => (res.json()))
+    .then(json => (json.success))
+    .catch(err => {throw new Error('error ' + err.message)})
     
+    if(token == null || ! isHuman){
+        reussi = false;
+        console.log("not human")
+    }else {
+        console.log("you did it :)")
+        reussi = true;
     }
-})
 
-
+    return reussi;
+}

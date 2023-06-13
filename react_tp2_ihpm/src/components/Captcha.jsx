@@ -5,5 +5,5 @@ function onChange(value) {
 }
 
 export default function App() {
-  return <ReCAPTCHA sitekey="6LcOB5AmAAAAAKs3yNejvhuFz3O-tKTOXrEQJ1wa" onChange={onChange} />
+  return <ReCAPTCHA sitekey={"6LdUN5EmAAAAAApe89bxMRqtp9PhwpS_8pWc26t_"} onChange={onChange} />
 }
