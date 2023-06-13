@@ -16,6 +16,7 @@ const Axios = require('axios');
 const e = require('express');
 const app = express();
 const qs = require('qs');
+const querystring = require('querystring')
 
 
 const RECAPTCHA_SECRET_KEY = "6LdUN5EmAAAAAOX4Op0ojcYfYkUtt2vea1DSgegf"
@@ -209,26 +210,48 @@ app.get('/getEvents', (req, res) => {
 })
 
 function checkIfHuman(token){
-    let reussi = false;
-    const isHuman = fetch('https://www.google.com/recaptcha/api/siteverify', {
-        method: 'post',
-        headers: {
-            'Accept' : 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-        },
-        body: `secret=${RECAPTCHA_SECRET_KEY}&response=${token}`
-    })
-    .then(res => (res.json()))
-    .then(json => (json.success))
-    .catch(err => {throw new Error('error ' + err.message)})
-    
-    if(token == null || ! isHuman){
-        reussi = false;
-        console.log("not human")
-    }else {
-        console.log("you did it :)")
-        reussi = true;
-    }
+    // console.log("the token " + token);
+    // let reussi = false;
+    // const isHuman = fetch('https://www.google.com/recaptcha/api/siteverify', {
+    //     method: 'post',
+    //     headers: {
+    //         'Accept' : 'application/json',
+    //         'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+    //     },
+    //     body: `secret=${RECAPTCHA_SECRET_KEY}&response=${token}`
+    // });
 
-    return reussi;
+    // console.log(isHuman.json());
+
+
+    // .then(res => (res.json()))
+    // .then(json => (json.success))
+    // .catch(err => {throw new Error('error ' + err.message)})
+
+    
+    // if(token == null || ! isHuman){
+    //     reussi = false;
+    //     console.log("not human")
+    // }else {
+    //     console.log("you did it :)")
+    //     reussi = true;
+    // }
+
+    // return reussi;
+
+
+Axios.post("https://www.google.com/recaptcha/api/siteverify", ({
+    secret: RECAPTCHA_SECRET_KEY,
+    response: token
+}), {
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+    }
+}).then(function(response) {
+    console.log(response.success)
+})
+
 }
+
+
+

@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button'
 import ReCAPTCHA from "react-google-recaptcha"
-import Recaptcha from 'react-google-recaptcha/lib/recaptcha';
 
 Axios.defaults.withCredentials= true;
 
