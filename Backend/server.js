@@ -84,36 +84,40 @@ app.post('/login',(req, res) => {
     const motDePasse = req.body.motDePasse;
     const captcha = req.body.captcha;
 
-
+    if(checkIfHuman(captcha)){
+        pool.connect(function(err){
+            if(err){ 
+                throw err;
+            }
+            console.log('je suis bel et bien dans login')
+    
+            let sql = 'SELECT * FROM utilisateur WHERE courriel =?' 
+            pool.query(sql, [courriel], function(error, resultat) {
+                if(error){
+                    throw error;
+                }
+            
+                if(resultat.length > 0) {
+                    bcrypt.compare(motDePasse, resultat[0].motDePasse, (error, response) => {
+                        if(response){
+                            req.session.user = resultat;
+                            console.log(req.session.user);
+                            res.send(resultat);
+                        }else {
+                            res.send({message : "mauvais courriel ou mot de passe!"})
+                        }
+                    });
+                }else {
+                    res.send({message : "l'utilisateur n'existe pas, aller vous inscrire! :o)"})
+                }
+            })
+    
+        });
+    }else {
+        res.send({message: "vous n'etes pas autoriser a vous connecter"});
+    }
   
-    pool.connect(function(err){
-        if(err){ 
-            throw err;
-        }
-        console.log('je suis bel et bien dans login')
-
-        let sql = 'SELECT * FROM utilisateur WHERE courriel =?' 
-        pool.query(sql, [courriel], function(error, resultat) {
-            if(error){
-                throw error;
-            }
-        
-            if(resultat.length > 0) {
-                bcrypt.compare(motDePasse, resultat[0].motDePasse, (error, response) => {
-                    if(response){
-                        req.session.user = resultat;
-                        console.log(req.session.user);
-                        res.send(resultat);
-                    }else {
-                        res.send({message : "mauvais courriel ou mot de passe!"})
-                    }
-                });
-            }else {
-                res.send({message : "l'utilisateur n'existe pas, aller vous inscrire! :o)"})
-            }
-        })
-
-    });
+ 
 });
 
 
@@ -142,7 +146,7 @@ app.post('/inscription', (req, res) => {
         pool.query(sql, [utilisateur], (err, resultat) => {
             if(err) {
                 if(err.code == 'ER_DUP_ENTRY' || err.errno == 1062){
-                    console.log("oh oh");
+                    console.log("duplicate error caught");
                     res.send({error: "Attention, un utilisateur utilise deja "})
                 } else{
                 throw err;
@@ -211,22 +215,17 @@ app.get('/getEvents', (req, res) => {
     })
 })
 
-function checkIfHuman(token){
-Axios.post(
+const checkIfHuman = async (token) => {
+    let verification = await Axios.post(
     `https://www.google.com/recaptcha/api/siteverify?secret=${RECAPTCHA_SECRET_KEY}&response=${token}`,
   {},
   {
     headers: {
         'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
     }
-}).then(function(response) {
-    if(response.data.success){
-        return true;
-    }else {
-        console.log("Captcha is not done m8")
-        return false;
-    }
-})
+}).then(response => response.data.success);
+
+return verification;
 
 }
 

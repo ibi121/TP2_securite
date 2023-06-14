@@ -22,7 +22,7 @@ export default function Connection(props) {
 
   function verifyIfCaptchaIsDone(){
     if(captcha.length > 0){
-      login();
+      login(captcha);
     }else {
       setCaptchaErreur("**SVP completer le captcha pour vous connecter.")
     }
@@ -31,6 +31,7 @@ export default function Connection(props) {
 
   function logins(){
     Axios.get("http://127.0.0.1:3069/login").then((reponse) => {
+      console.log(reponse.data.message);
       if(reponse.data.loggedIn === true) {
         props.onClick(reponse.data.utilisateur[0]);
         backToTheFuture();
@@ -39,11 +40,11 @@ export default function Connection(props) {
   };
 
 
-  function login(){
+  function login(captchaReussi){
     Axios.post("http://127.0.0.1:3069/login",{
       motDePasse : motDePasse,
       courriel: courriel,
-      captcha: captcha
+      captcha: captchaReussi
     }).then((response)=> {
       if(response.data.message) {
         console.log(response.data.message)
