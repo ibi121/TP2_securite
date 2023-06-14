@@ -83,7 +83,9 @@ app.post('/login',(req, res) => {
     const courriel = req.body.courriel;
     const motDePasse = req.body.motDePasse;
     const captcha = req.body.captcha;
-    console.log(checkIfHuman(captcha));
+
+
+  
     pool.connect(function(err){
         if(err){ 
             throw err;
@@ -210,45 +212,20 @@ app.get('/getEvents', (req, res) => {
 })
 
 function checkIfHuman(token){
-    // console.log("the token " + token);
-    // let reussi = false;
-    // const isHuman = fetch('https://www.google.com/recaptcha/api/siteverify', {
-    //     method: 'post',
-    //     headers: {
-    //         'Accept' : 'application/json',
-    //         'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-    //     },
-    //     body: `secret=${RECAPTCHA_SECRET_KEY}&response=${token}`
-    // });
-
-    // console.log(isHuman.json());
-
-
-    // .then(res => (res.json()))
-    // .then(json => (json.success))
-    // .catch(err => {throw new Error('error ' + err.message)})
-
-    
-    // if(token == null || ! isHuman){
-    //     reussi = false;
-    //     console.log("not human")
-    // }else {
-    //     console.log("you did it :)")
-    //     reussi = true;
-    // }
-
-    // return reussi;
-
-
-Axios.post("https://www.google.com/recaptcha/api/siteverify", ({
-    secret: RECAPTCHA_SECRET_KEY,
-    response: token
-}), {
+Axios.post(
+    `https://www.google.com/recaptcha/api/siteverify?secret=${RECAPTCHA_SECRET_KEY}&response=${token}`,
+  {},
+  {
     headers: {
         'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
     }
 }).then(function(response) {
-    console.log(response.success)
+    if(response.data.success){
+        return true;
+    }else {
+        console.log("Captcha is not done m8")
+        return false;
+    }
 })
 
 }

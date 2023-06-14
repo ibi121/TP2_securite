@@ -11,12 +11,21 @@ export default function Connection(props) {
 
   const [courriel, setCourriel] = useState(0); 
   const [motDePasse, setMotDePasse] = useState(0); 
-  const [captcha, setCaptcha] = useState(0);
+  const [captcha, setCaptcha] = useState("");
+  const [erreurCapctha, setCaptchaErreur] = useState(""); 
   
   const navigate = useNavigate();
 
   const backToTheFuture = () => {
     navigate("/Acceuil")
+  }
+
+  function verifyIfCaptchaIsDone(){
+    if(captcha.length > 0){
+      login();
+    }else {
+      setCaptchaErreur("**SVP completer le captcha pour vous connecter.")
+    }
   }
 
 
@@ -44,7 +53,6 @@ export default function Connection(props) {
     })
   }
 
-  
   return (
     <div>
       <h3>Bienvenue, veuillez vous connecter</h3>
@@ -58,8 +66,12 @@ export default function Connection(props) {
         <input type="password" onChange={(e) => setMotDePasse(e.target.value)} />
       </label>
      
+     <div>
       <ReCAPTCHA sitekey={"6LdUN5EmAAAAAApe89bxMRqtp9PhwpS_8pWc26t_"} onChange={setCaptcha} />
-      <Button onClick={() => login()}>Connecter</Button>
+      <h4 class="text-danger" >{erreurCapctha}</h4>
+      </div>
+      
+      <Button onClick={() => verifyIfCaptchaIsDone()}>Connecter</Button>
     </div>
   )
 }
