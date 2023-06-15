@@ -3,7 +3,6 @@ import Axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import PasswordStrengthBar from 'react-password-strength-bar'
 
 Axios.defaults.withCredentials = true;
 
@@ -111,7 +110,6 @@ export default function Inscription(props) {
             Mot de passe *: </label>
           <div className='col-sm-1'>
             <input type="password" className='form-control-sm' onChange={(e) => setMotDePasse(e.target.value)} />
-            {erreurMotDePasse && <h4 className="text-danger">{erreurMotDePasse}</h4>}
             <PasswordStrengthBar password={motDePasse} minLength={8} barColors={['#ddd', '#ef4836', '#f6b44d', '#2b90ef', '#25c281']}/>
           </div>
 
