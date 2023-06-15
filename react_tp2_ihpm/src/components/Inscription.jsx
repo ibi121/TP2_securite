@@ -3,6 +3,8 @@ import Axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import PasswordStrengthBar from 'react-password-strength-bar';
+
 
 Axios.defaults.withCredentials = true;
 
@@ -19,11 +21,7 @@ export default function Inscription(props) {
   const [nom, setNom] = useState(0);
   const [dateNaissance, setDateNaissance] = useState(0);
   
-  const [erreurCourriel, setErreurCourriel] = useState('');
-  const [erreurMotDePasse, setErreurMotDePasse] = useState('');
-  const [erreurNom, seterreurNom] = useState(""); 
-  const [erreurPrenom, seterreurPrenom] = useState(""); 
-  const [erreurPhone, setperreurPhone] = useState(""); 
+  const [errorEmail, setErrorEmail] = useState("");
   
   const navigate = useNavigate();
 
@@ -31,44 +29,27 @@ export default function Inscription(props) {
     navigate("/Connection")
   }
 
-  function register() {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; 
-    const nameRegex = /^[A-Za-z]+$/; 
-    const phoneRegex = /^\d{10}$/; 
-
-   if (!emailRegex.test(courriel)) 
-   { 
-     setCourriel("Adresse email invalide"); 
-     return;
-   } 
-
-   if (!passwordRegex.test(motDePasse))
-    { 
-      setMotDePasse("Mot de passe invalide. Le mot de passe doit contenir au moins 8 caractères, une lettre et un chiffre.");
-      return;
-    } 
-   if (!nameRegex.test(prenom))
-    { 
-      seterreurPrenom("Prénom et nom doivent contenir uniquement des lettres");
-      return;
+  function validateEmail(email){
+    const emailValidator = /^[\w.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i;
+    if(emailValidator.test(email)){
+      setCourriel(email);
+      setErrorEmail("");
+    }else {
+      setErrorEmail("svp mettre un courriel valide");
     }
+  }
 
+  function IsnotRegex(mot, hookThatSetsIt){
+    const antiRegex = /^(?!(?:.*\b(?:SELECT|INSERT|UPDATE|DELETE|DROP|ALTER|CREATE)\b)).*$/
+    if(antiRegex.test(mot)){
+      hookThatSetsIt(mot);
+    }else {
+      console.log("not working m8")
 
-    if (!nameRegex.test(nom))
-    { 
-      setNom("Prénom et nom doivent contenir uniquement des lettres");
-      return;
     }
+  }
 
-    if (!phoneRegex.test(numeroDeTelephone)) 
-    { 
-     console.log("Numéro de téléphone invalide. Le numéro de téléphone doit contenir 10 chiffres.");
-     return;
-    } 
-
-
-   
+  function register() {   
      Axios.post("http://127.0.0.1:3069/inscription", {
         courriel: courriel,
         motDePasse: motDePasse,
@@ -85,11 +66,6 @@ export default function Inscription(props) {
           console.log("Je suis erreur de duplicate key " + response.data.error);
         }
       });
-      
-    // } else {
-    //   // Afficher des messages d'erreur ou effectuer d'autres actions en cas de champs invalides
-    //   console.log("Veuillez remplir tous les champs correctement.");
-    // }
   }
   return (
     <form className='d-flex justify-content-center'>
@@ -99,53 +75,54 @@ export default function Inscription(props) {
         <div className='form-group row'>
           <label className='col-sm-5 col-form-label'>
             Entrez votre courriel *: </label>
-          <div className='col-sm-1'>
-            <input type="email" className='form-control-sm' onChange={(e) => setCourriel(e.target.value)} />
-            {erreurCourriel && <h4 className="text-danger">{erreurCourriel}</h4>}
+          <div className='col-sm-6'>
+            <input type="email" className='form-control-sm' onChange={(e) => validateEmail(e.target.value)} />
+            {<p className="text-danger">{errorEmail}</p>}
           </div>
 
         </div>
         <div className='form-group row'>
           <label className='col-sm-5 col-form-label'>
             Mot de passe *: </label>
-          <div className='col-sm-1'>
-            <input type="password" className='form-control-sm' onChange={(e) => setMotDePasse(e.target.value)} />
-            <PasswordStrengthBar password={motDePasse} minLength={8} barColors={['#ddd', '#ef4836', '#f6b44d', '#2b90ef', '#25c281']}/>
+          <div className='col-sm-6'>
+            <input type="password" className='form-control-sm' placeholder="8 character avec au moins un numero" onChange={(e) => {setMotDePasse(e.target.value)}}/>
+            <PasswordStrengthBar
+              password={motDePasse}
+              minLength={8}
+            >
+            </PasswordStrengthBar>
           </div>
 
         </div>
         <div className='form-group row'>
           <label className='col-sm-5 col-form-label'>Prenom * :</label>
-          <div className='col-sm-1'>
-            <input type="text" className='form-control-sm' onChange={(e) => setPrenom(e.target.value)}></input>
-            {erreurPrenom && <h4 className="text-danger">{erreurPrenom}</h4>}
+          <div className='col-sm-6'>
+            <input type="text" className='form-control-sm' onChange={(e) => IsnotRegex(e.target.value, setPrenom)}></input>
           </div>
         </div>
         <div className='form-group row'>
           <label className='col-sm-5 col-form-label'>
             Nom * : </label>
-          <div className='col-sm-1'>
-            <input type="text" className='form-control-sm' onChange={(e) => setNom(e.target.value)} />
-            {erreurNom && <h4 className="text-danger">{erreurNom}</h4>}
+          <div className='col-sm-6'>
+            <input type="text" className='form-control-sm' onChange={(e) => IsnotRegex(e.target.value, setNom)} />
           </div>
         </div>
         <div className='form-group row'>
           <label className='col-sm-5 col-form-label'>
             Numero de telephone : </label>
-          <div className='col-sm-1'>
+          <div className='col-sm-6'>
             <input type="number" className='form-control-sm' onChange={(e) => setNumeroTelephone(e.target.value)} />
-            {erreurPhone && <h4 className="text-danger">{erreurPhone}</h4>}
           </div>
         </div>
         <div className='form-group row'>
           <label className='col-sm-5 col-form-label'>Age : </label>
-          <div className='col-sm-1'>
+          <div className='col-sm-6'>
             <input type="number" className='form-control-sm' onChange={(e) => setAge(e.target.value)}></input>
           </div>
         </div>
         <div className='form-group row'>
           <label className='col-sm-5 col-form-label'>Date de naissance :</label>
-          <div className='col-sm-2'>
+          <div className='col-sm-6'>
             <input type="date" className='form-control-sm' onChange={(e) => setDateNaissance(e.target.value)}></input>
           </div>
         </div>
