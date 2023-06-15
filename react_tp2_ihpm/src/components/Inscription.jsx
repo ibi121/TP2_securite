@@ -19,7 +19,13 @@ export default function Inscription(props) {
   const [age, setAge] = useState(0);
   const [nom, setNom] = useState(0);
   const [dateNaissance, setDateNaissance] = useState(0);
-
+  
+  const [erreurCourriel, setErreurCourriel] = useState('');
+  const [erreurMotDePasse, setErreurMotDePasse] = useState('');
+  const [erreurNom, seterreurNom] = useState(""); 
+  const [erreurPrenom, seterreurPrenom] = useState(""); 
+  const [erreurPhone, setperreurPhone] = useState(""); 
+  
   const navigate = useNavigate();
 
   const goToConnection = () => {
@@ -29,16 +35,38 @@ export default function Inscription(props) {
   function register() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; 
-   const nameRegex = /^[A-Za-z]+$/; 
+    const nameRegex = /^[A-Za-z]+$/; 
     const phoneRegex = /^\d{10}$/; 
+
    if (!emailRegex.test(courriel)) 
-   { console.log("Adresse email invalide"); return; } 
+   { 
+     setCourriel("Adresse email invalide"); 
+     return;
+   } 
+
    if (!passwordRegex.test(motDePasse))
-    { console.log("Mot de passe invalide. Le mot de passe doit contenir au moins 8 caractères, une lettre et un chiffre."); return; } 
-   if (!nameRegex.test(prenom) || !nameRegex.test(nom))
-    { console.log("Prénom et nom doivent contenir uniquement des lettres"); return; }
+    { 
+      setMotDePasse("Mot de passe invalide. Le mot de passe doit contenir au moins 8 caractères, une lettre et un chiffre.");
+      return;
+    } 
+   if (!nameRegex.test(prenom))
+    { 
+      seterreurPrenom("Prénom et nom doivent contenir uniquement des lettres");
+      return;
+    }
+
+
+    if (!nameRegex.test(nom))
+    { 
+      setNom("Prénom et nom doivent contenir uniquement des lettres");
+      return;
+    }
+
     if (!phoneRegex.test(numeroDeTelephone)) 
-   { console.log("Numéro de téléphone invalide. Le numéro de téléphone doit contenir 10 chiffres."); return; }
+    { 
+     console.log("Numéro de téléphone invalide. Le numéro de téléphone doit contenir 10 chiffres.");
+     return;
+    } 
 
 
    
@@ -74,6 +102,7 @@ export default function Inscription(props) {
             Entrez votre courriel *: </label>
           <div className='col-sm-1'>
             <input type="email" className='form-control-sm' onChange={(e) => setCourriel(e.target.value)} />
+            {erreurCourriel && <h4 className="text-danger">{erreurCourriel}</h4>}
           </div>
 
         </div>
@@ -82,7 +111,8 @@ export default function Inscription(props) {
             Mot de passe *: </label>
           <div className='col-sm-1'>
             <input type="password" className='form-control-sm' onChange={(e) => setMotDePasse(e.target.value)} />
-            <PasswordStrengthBar password={motDePasse} minLength={6} barColors={['#ddd', '#ef4836', '#f6b44d', '#2b90ef', '#25c281']}/>
+            {erreurMotDePasse && <h4 className="text-danger">{erreurMotDePasse}</h4>}
+            <PasswordStrengthBar password={motDePasse} minLength={8} barColors={['#ddd', '#ef4836', '#f6b44d', '#2b90ef', '#25c281']}/>
           </div>
 
         </div>
@@ -90,6 +120,7 @@ export default function Inscription(props) {
           <label className='col-sm-5 col-form-label'>Prenom * :</label>
           <div className='col-sm-1'>
             <input type="text" className='form-control-sm' onChange={(e) => setPrenom(e.target.value)}></input>
+            {erreurPrenom && <h4 className="text-danger">{erreurPrenom}</h4>}
           </div>
         </div>
         <div className='form-group row'>
@@ -97,6 +128,7 @@ export default function Inscription(props) {
             Nom * : </label>
           <div className='col-sm-1'>
             <input type="text" className='form-control-sm' onChange={(e) => setNom(e.target.value)} />
+            {erreurNom && <h4 className="text-danger">{erreurNom}</h4>}
           </div>
         </div>
         <div className='form-group row'>
@@ -104,6 +136,7 @@ export default function Inscription(props) {
             Numero de telephone : </label>
           <div className='col-sm-1'>
             <input type="number" className='form-control-sm' onChange={(e) => setNumeroTelephone(e.target.value)} />
+            {erreurPhone && <h4 className="text-danger">{erreurPhone}</h4>}
           </div>
         </div>
         <div className='form-group row'>
