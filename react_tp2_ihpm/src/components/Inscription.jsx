@@ -26,25 +26,21 @@ export default function Inscription(props) {
   }
 
   function register() {
-    // Valider les champs à l'aide d'expressions régulières
-    // const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(courriel);
-    // const isPasswordValid = /^.{8,}$/.test(motDePasse);
-    // const isFirstNameValid = /^[A-Za-z]+$/.test(prenom);
-    // const isPhoneNumberValid = /^[0-9]{10}$/.test(numeroDeTelephone);
-    // const isAgeValid = /^(1[8-9]|[2-9][0-9])$/.test(age);
-    // const isLastNameValid = /^[A-Za-z]+$/.test(nom);
-    // const isDateOfBirthValid = /^\d{4}-\d{2}-\d{2}$/.test(dateNaissance);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; 
+   const nameRegex = /^[A-Za-z]+$/; 
+    const phoneRegex = /^\d{10}$/; 
+   if (!emailRegex.test(courriel)) 
+   { console.log("Adresse email invalide"); return; } 
+   if (!passwordRegex.test(motDePasse))
+    { console.log("Mot de passe invalide. Le mot de passe doit contenir au moins 8 caractères, une lettre et un chiffre."); return; } 
+   if (!nameRegex.test(prenom) || !nameRegex.test(nom))
+    { console.log("Prénom et nom doivent contenir uniquement des lettres"); return; }
+    if (!phoneRegex.test(numeroDeTelephone)) 
+   { console.log("Numéro de téléphone invalide. Le numéro de téléphone doit contenir 10 chiffres."); return; }
 
-    // Vérifier si tous les champs sont valides
-    // if (
-    //   isEmailValid &&
-    //   isPasswordValid &&
-    //   isFirstNameValid &&
-    //   isPhoneNumberValid &&
-    //   isAgeValid &&
-    //   isLastNameValid &&
-    //   isDateOfBirthValid
-    // ) {
+
+   
      Axios.post("http://127.0.0.1:3069/inscription", {
         courriel: courriel,
         motDePasse: motDePasse,
